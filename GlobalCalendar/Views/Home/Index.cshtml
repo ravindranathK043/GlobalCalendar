@@ -1,0 +1,450 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+}
+<h2>Index</h2>
+
+<div id="ModalLogin" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Login</h4>
+            </div>
+            <div class="modal-body">
+                <form class="col-md-12 form-horizontal">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="txtUsername" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="txtPassword" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btnlogin">Login</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="DropDownDIv">
+        <div class="col-lg-3">
+            <label class="form-control">User Name</label>
+            <label class="form-control">Trainer</label>
+        </div>
+        <div class="col-lg-9">
+            <select id="ddlname" class="form-control"></select>
+            <select id="ddlTrainer" class="form-control"></select>
+        </div>       
+   
+</div>
+<div id="calendarId"  style="margin-top:3%" ></div>
+
+<div id="Modalid" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+            </div>
+            <div class="modal-body">
+                <button id="btnDelete" class="btn btn-default pull-right">Remove</button>
+                <button id="btnEdit" class="btn btn-default pull-right">Edit</button>
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="EditModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Save</h4>
+            </div>
+            <div class="modal-body">
+                <form class="col-md-12 form-horizontal">
+                    <input type="hidden" id="hdcoursesid" values="0" />
+                    <input type="hidden" id="hdUserId" values="0" />
+                    <input type="hidden" id="hdLoginUser" value="0" />
+                    <div class="form-group">
+                        <label>User Nmae</label>
+                        <input type="text" id="txtUser" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>CourseName</label>
+                        <input type="text" id="txtcourses" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>PreRequisite</label>
+                        <input type="text" id="txtPrereq" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Trainer</label>
+                        <select id="ddlTrainername" class="form-control"></select>
+
+                    </div>
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <input type="text" id="txtDuration" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" id="txtStartDate" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" id="txtEndDate" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Timing</label>
+                        <div class="input-group date" id="timingOnly">
+                            <input type="text" id="txtTiming" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon-time"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Link To Join</label>
+                        <input type="text" id="txtLinktoJoin" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                <button type="button" id="btnCloses" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            debugger;
+            var events = []; var selectEve = null;
+            $('#ModalLogin').modal();
+            // GetAllCourses();
+            $('#btnlogin').click(function () {
+                if ($('#txtUsername').val().trim() == "") {
+                    alert('Enter User name');
+                    return;
+                } else if ($('#txtPassword').val().trim() == "") {
+                    alert('Enter Password');
+                    return;
+                } else {
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/LoginUser",
+                        data: { 'username': $('#txtUsername').val(), 'Password': $('#txtPassword').val() },
+                        success: function (data) {
+                            if (data.status) {
+                                debugger;
+                                $('#hdUserId').val(data.Userid);
+                                $('#txtUser').val($('#txtUsername').val());
+                                $('#hdLoginUser').val(data.Userid);
+
+                                GetAllCourses(data.Userid);
+                                Bindcustmer(); BindTrainer();
+                                $('#ModalLogin').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Enter valid user..!');
+                        }
+                    })
+                }
+
+            })
+            $('#ddlname').change(function () {
+                var Getvalue = $('#ddlname').val();
+                debugger;
+                GetAllCourses(Getvalue);
+                //alert(Getvalue);
+            })
+            function Bindcustmer() {
+                var custmet = '';
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/GetCustomer",
+                    data: {},
+                    success: function (data) {
+                        debugger;
+                        $.each(data, function (i, s) {
+                            var getdata = new Option(s.UserName, s.UserId);
+                            $('#ddlname').append(getdata);
+                        })
+                    }
+                })
+            } function BindTrainer() {
+                var custmet = '';
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/GetTrainer",
+                    data: {},
+                    success: function (data) {
+                        debugger;
+                        $.each(data, function (i, s) {
+                            var getdata = new Option(s.TrainerName, s.TrainerId);
+                            $('#ddlTrainer').append(getdata);
+                            var getdata1 = new Option(s.TrainerName, s.TrainerId);
+                            $('#ddlTrainername').append(getdata1);
+                        })
+                    }
+                })
+            }
+            function GetAllCourses(Userid) {
+                events = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/GetTrinings",
+                    data: { 'Userid': Userid },
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            debugger;
+                            events.push({
+                                CourseId: v.Id,
+                                title: v.CourseName,
+                                PreRequest: v.PreRequisite,
+                                Durtion: v.Duration,
+                                start: moment(v.StartDate),
+                                ends: moment(v.EndDate),//!= null ? moment(v.EndDate) : null,
+                                timeing: moment(v.Timings),
+                                linktoJoin: v.LinkToJoin,
+                                UserId: v.UserId,
+                                UserName: v.UserName
+                            });
+                        })
+                        generatecalender(events);
+                    },
+                    error: function (error) {
+                        alert("Failed");
+                    }
+                })
+
+            }
+
+            function generatecalender(events) {
+                $('#calendarId').fullCalendar('destroy');
+                debugger;
+                $('#calendarId').fullCalendar({
+
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        selectEve = calEvent;
+                        $('#Modalid #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>User Name:  <b/>' + calEvent.UserName));
+                        $description.append($('<p/>').html('<b>CourseName: <b/>' + calEvent.title));
+                        $description.append($('<p/>').html('<b>StartDate: <b/>' + calEvent.start.format("DD-MMM-YYYY")));
+                        // if (calEvent.end != null) {
+                        // $description.append($('<p/>').html('<b>EndDate:<b/>' + calEvent.ends.format("DD-MMM-YYYY")));
+                        //}
+                        $description.append($('<p/>').html('<b>Timing: <b/>' + calEvent.timeing.format("HH:mm a")));
+                        $description.append($('<p/>').html('<b>link To Join: <b/>' + calEvent.linktoJoin));
+
+                        $('#Modalid #pDetails').empty().html($description);
+                        $('#Modalid').modal();
+                    },
+                    selectable: true,
+
+                    select: function (start, ends) {
+                        debugger;
+                        var usernames = ''; var userids = '';
+                        if ($('#hdUserId').val() != 1) {
+                            usernames = $('#txtUsername').val();
+                            userids = $('#hdUserId').val();
+                        }
+                        selectEve = {
+                            Id: 0,
+                            coursename: '',
+                            PreRequisite: '',
+                            duration: '',
+                            start: start,
+                            ends: ends,
+                            timeing: '',
+                            LinkToJoin: '',
+                            UserId: userids,//$('#hdUserId').val(),// UserId,
+                            UserName: usernames,// $('#txtUsername').val(), //UserName
+                        }
+
+                        OpenEditModal();
+                    }
+                })
+            }
+
+            $('#btnDelete').click(function () {
+                if (selectEve != null && confirm('You want to delete?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/DeleteEvent",
+                        data: { 'CourseId': selectEve.CourseId },
+                        success: function (data) {
+                            if (data.status) {
+                                GetAllCourses(selectEve.UserId); $('#Modalid').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Record not deleted..!');
+                        }
+                    })
+                }
+            })
+
+            $('#btnEdit').click(function () {
+                OpenEditModal();
+            })
+
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY'
+            });
+            $('#timingOnly').datetimepicker({
+                format: 'HH:mm a'
+            });
+
+            function OpenEditModal() {
+                debugger;
+                $('#Modalid').modal('hide');
+                $('#EditModal').modal();
+                if (selectEve != null) {
+                    $('#hdcoursesid').val(selectEve.CourseId);
+                    $('#txtcourses').val(selectEve.title);
+                    $('#txtPrereq').val(selectEve.PreRequest);
+                    $('#txtDuration').val(selectEve.Durtion);
+                    $('#txtStartDate').val(selectEve.start.format("DD/MM/YYYY"));
+                    $('#txtEndDate').val(selectEve.ends.format("DD/MM/YYYY"));
+                    if (selectEve.timeing != "")
+                        $('#txtTiming').val(selectEve.timeing.format("HH:mm a"));
+                    $('#txtLinktoJoin').val(selectEve.linktoJoin);
+                    $('#hdUserId').val(selectEve.UserId);
+                    $('#txtUser').val(selectEve.UserName);
+                    debugger;
+                    if ($('#txtUser').val() == "admin") {
+                        $('#hdUserId').val("");
+                        $('#txtUser').val("");
+                    }
+                    if ($('#txtUser').val() == "") {
+                        document.getElementById("txtUser").disabled = false;
+                    } else {
+                        document.getElementById("txtUser").disabled = true;
+                    }
+
+                }
+            }
+            $('#btnSave').click(function () {
+                debugger;
+                if ($('#txtUser').val().trim() == "") {
+                    alert('Enter User name');
+                    return;
+                }
+                if ($('#txtcourses').val().trim() == "") {
+                    alert('Enter Course name');
+                    return;
+                } if ($('#txtPrereq').val().trim() == "") {
+                    alert('Enter PreRequest');
+                    return;
+                } if ($('#txtDuration').val().trim() == "") {
+                    alert('Enter Duration');
+                    return;
+                } if ($('#txtStartDate').val().trim() == "") {
+                    alert('Select start date');
+                    return;
+                } if ($('#txtEndDate').val().trim() == "") {
+                    alert('Select end date');
+                    return;
+                } else {
+                    var strtdate = moment($('#txtStartDate').val(), "DD/MM/YYYY").toDate();
+                    var enddate = moment($('#txtEndDate').val(), "DD/MM/YYYY").toDate();
+                    var curdate = moment(new Date, "DD/MM/YYYY").toDate();
+                    if (curdate > strtdate) {
+                        alert('Invalid date ');
+                        return;
+                    }
+                    if (strtdate > enddate) {
+                        alert('Invalid date ');
+                        return;
+                    }
+                }
+                if ($('#txtTiming').val().trim() == "") {
+                    alert('Select timing');
+                    return;
+                }
+
+                var data = {
+                    Id: $('#hdcoursesid').val(),
+                    coursename: $('#txtcourses').val().trim(),
+                    PreRequisite: $('#txtPrereq').val().trim(),
+                    duration: $('#txtDuration').val().trim(),
+                    startdate: $('#txtStartDate').val(),
+                    enddate: $('#txtEndDate').val(),
+                    Timings: $('#txtTiming').val(),
+                    LinkToJoin: $('#txtLinktoJoin').val(),
+                    UserId: $('#hdUserId').val(),
+                    Username: $('#txtUser').val()
+                }
+                debugger;
+                saveEvent(data);
+            })
+
+            function saveEvent(data) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/SaveEvent",
+                    data: { e: data, 'Cust': $('#txtUser').val() },
+                    success: function (data) {
+                        debugger;
+                        if (data.status) {
+                            GetAllCourses($('#hdLoginUser').val());
+                            $('#EditModal').modal('hide');
+                        }
+                    },
+                    error: function () {
+                        alert('Not Saved..!');
+                    }
+                })
+            }
+        })
+    </script>
+
+
+
+}
