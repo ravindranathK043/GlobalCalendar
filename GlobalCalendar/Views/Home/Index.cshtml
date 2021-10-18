@@ -33,17 +33,17 @@
     </div>
 </div>
 <div id="DropDownDIv">
-        <div class="col-lg-3">
-            <label class="form-control">User Name</label>
-            <label class="form-control">Trainer</label>
-        </div>
-        <div class="col-lg-9">
-            <select id="ddlname" class="form-control"></select>
-            <select id="ddlTrainer" class="form-control"></select>
-        </div>       
-   
+    <div class="col-lg-3">
+        <label class="form-control">Course</label>
+        <label class="form-control">Trainer</label>
+    </div>
+    <div class="col-lg-9">
+        <select id="ddlname" class="form-control"></select>
+        <select id="ddlTrainer" class="form-control"></select>
+    </div>
+
 </div>
-<div id="calendarId"  style="margin-top:3%" ></div>
+<div id="calendarId" style="margin-top:3%"></div>
 
 <div id="Modalid" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -77,22 +77,26 @@
                     <input type="hidden" id="hdUserId" values="0" />
                     <input type="hidden" id="hdLoginUser" value="0" />
                     <div class="form-group">
-                        <label>User Nmae</label>
-                        <input type="text" id="txtUser" class="form-control" />
+                        <label>User Name</label>
+                        @* <input type="text" id="txtUser" class="form-control" />*@
+                        <select id="ddlUserName" class="form-control"></select>
                     </div>
                     <div class="form-group">
                         <label>CourseName</label>
-                        <input type="text" id="txtcourses" class="form-control" />
+                        @* <input type="text" id="txtcourses" class="form-control" />*@
+                        <select id="ddlCourseName" class="form-control">
+                            <option value="0">select Course</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trainer</label>
+                        <select id="ddlTrainername" class="form-control"></select>
                     </div>
                     <div class="form-group">
                         <label>PreRequisite</label>
                         <input type="text" id="txtPrereq" class="form-control" />
                     </div>
-                    <div class="form-group">
-                        <label>Trainer</label>
-                        <select id="ddlTrainername" class="form-control"></select>
 
-                    </div>
                     <div class="form-group">
                         <label>Duration</label>
                         <input type="text" id="txtDuration" class="form-control" />
@@ -172,9 +176,9 @@
                                 $('#hdUserId').val(data.Userid);
                                 $('#txtUser').val($('#txtUsername').val());
                                 $('#hdLoginUser').val(data.Userid);
-
-                                GetAllCourses(data.Userid);
-                                Bindcustmer(); BindTrainer();
+                                //GetAllCourses(data.Userid);
+                                GetAllCourses(0, 0);
+                                Bindcustmer(); BindTrainer(); BindCourses();
                                 $('#ModalLogin').modal('hide');
                             }
                         },
@@ -188,7 +192,13 @@
             $('#ddlname').change(function () {
                 var Getvalue = $('#ddlname').val();
                 debugger;
-                GetAllCourses(Getvalue);
+                GetAllCourses(Getvalue,0);
+                //alert(Getvalue);
+            })
+            $('#ddlTrainer').change(function () {
+                var Getvalue = $('#ddlTrainer').val();
+                debugger;
+                GetAllCourses(0,Getvalue);
                 //alert(Getvalue);
             })
             function Bindcustmer() {
@@ -200,8 +210,10 @@
                     success: function (data) {
                         debugger;
                         $.each(data, function (i, s) {
-                            var getdata = new Option(s.UserName, s.UserId);
-                            $('#ddlname').append(getdata);
+                            //var getdata = new Option(s.UserName, s.UserId);
+                            //$('#ddlname').append(getdata);
+                            var getdata1 = new Option(s.UserName, s.UserId);
+                            $('#ddlUserName').append(getdata1);
                         })
                     }
                 })
@@ -221,18 +233,36 @@
                         })
                     }
                 })
+            } function BindCourses() {
+                var custmet = '';
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/GetCourses",
+                    data: {},
+                    success: function (data) {
+                        debugger;
+                        $.each(data, function (i, s) {
+                            var getdata = new Option(s.CourserName, s.CourseId);
+                            $('#ddlCourseName').append(getdata);
+                            var getdata = new Option(s.CourserName, s.CourseId);
+                            $('#ddlname').append(getdata);
+                        })
+                    }
+                })
             }
-            function GetAllCourses(Userid) {
+            function GetAllCourses(Userid,trainerId) {
                 events = [];
                 $.ajax({
                     type: "GET",
                     url: "/Home/GetTrinings",
-                    data: { 'Userid': Userid },
+                    data: { 'Userid': Userid, 'trainerId': trainerId},
                     success: function (data) {
                         $.each(data, function (i, v) {
                             debugger;
                             events.push({
                                 CourseId: v.Id,
+                                TrainerId: v.TrainerId,
+                                TrainerName: v.TrainerName,
                                 title: v.CourseName,
                                 PreRequest: v.PreRequisite,
                                 Durtion: v.Duration,
@@ -279,10 +309,20 @@
                         // if (calEvent.end != null) {
                         // $description.append($('<p/>').html('<b>EndDate:<b/>' + calEvent.ends.format("DD-MMM-YYYY")));
                         //}
+                        $description.append($('<p/>').html('<b>Trainer : <b/>' + calEvent.TrainerName));
                         $description.append($('<p/>').html('<b>Timing: <b/>' + calEvent.timeing.format("HH:mm a")));
                         $description.append($('<p/>').html('<b>link To Join: <b/>' + calEvent.linktoJoin));
 
                         $('#Modalid #pDetails').empty().html($description);
+                        debugger;
+                        if ($('#hdLoginUser').val() == calEvent.UserId || $('#hdLoginUser').val()=='1' ) {
+                            document.getElementById("btnEdit").disabled = false;
+                            document.getElementById("btnDelete").disabled = false;
+                        } else {
+                            document.getElementById("btnEdit").disabled = true;
+                            document.getElementById("btnDelete").disabled = true;
+
+                        }
                         $('#Modalid').modal();
                     },
                     selectable: true,
@@ -292,19 +332,20 @@
                         var usernames = ''; var userids = '';
                         if ($('#hdUserId').val() != 1) {
                             usernames = $('#txtUsername').val();
-                            userids = $('#hdUserId').val();
+                            userids = $('#hdLoginUser').val();
                         }
                         selectEve = {
                             Id: 0,
-                            coursename: '',
+                            CourseId: '0',
+                            TrainerId:'0',
                             PreRequisite: '',
                             duration: '',
                             start: start,
                             ends: ends,
                             timeing: '',
                             LinkToJoin: '',
-                            UserId: userids,//$('#hdUserId').val(),// UserId,
-                            UserName: usernames,// $('#txtUsername').val(), //UserName
+                            UserId:  userids,//$('#hdUserId').val(),// UserId,
+                            UserName: ''// usernames,// $('#txtUsername').val(), //UserName
                         }
 
                         OpenEditModal();
@@ -320,7 +361,9 @@
                         data: { 'CourseId': selectEve.CourseId },
                         success: function (data) {
                             if (data.status) {
-                                GetAllCourses(selectEve.UserId); $('#Modalid').modal('hide');
+                                //GetAllCourses(selectEve.UserId);
+                                GetAllCourses(0,0);
+                                $('#Modalid').modal('hide');
                             }
                         },
                         error: function () {
@@ -347,8 +390,10 @@
                 $('#EditModal').modal();
                 if (selectEve != null) {
                     $('#hdcoursesid').val(selectEve.CourseId);
-                    $('#txtcourses').val(selectEve.title);
+                    $('#ddlCourseName').val(selectEve.CourseId);
+                    $('#ddlTrainername').val(selectEve.TrainerId);
                     $('#txtPrereq').val(selectEve.PreRequest);
+
                     $('#txtDuration').val(selectEve.Durtion);
                     $('#txtStartDate').val(selectEve.start.format("DD/MM/YYYY"));
                     $('#txtEndDate').val(selectEve.ends.format("DD/MM/YYYY"));
@@ -356,30 +401,34 @@
                         $('#txtTiming').val(selectEve.timeing.format("HH:mm a"));
                     $('#txtLinktoJoin').val(selectEve.linktoJoin);
                     $('#hdUserId').val(selectEve.UserId);
-                    $('#txtUser').val(selectEve.UserName);
+                    $('#ddlUserName').val(selectEve.UserId);
                     debugger;
-                    if ($('#txtUser').val() == "admin") {
+                    if ($('#hdLoginUser').val() == "1") {
                         $('#hdUserId').val("");
                         $('#txtUser').val("");
+                        
                     }
-                    if ($('#txtUser').val() == "") {
-                        document.getElementById("txtUser").disabled = false;
+                    if ($('#hdLoginUser').val() == "1") {
+                        document.getElementById("ddlUserName").disabled = false;
                     } else {
-                        document.getElementById("txtUser").disabled = true;
+                        document.getElementById("ddlUserName").disabled = true;
                     }
 
                 }
             }
             $('#btnSave').click(function () {
                 debugger;
-                if ($('#txtUser').val().trim() == "") {
-                    alert('Enter User name');
+                if ($('#ddlUserName').val().trim() == "" || $('#ddlUserName').val().trim() == "1") {
+                    alert('select User');
                     return;
                 }
-                if ($('#txtcourses').val().trim() == "") {
-                    alert('Enter Course name');
+                if ($('#ddlCourseName').val() == "0") {
+                    alert('Select Course');
                     return;
-                } if ($('#txtPrereq').val().trim() == "") {
+                } if ($('#ddlTrainername').val() == "0") {
+                    alert('Select Trainer');
+                    return;
+                }if ($('#txtPrereq').val().trim() == "") {
                     alert('Enter PreRequest');
                     return;
                 } if ($('#txtDuration').val().trim() == "") {
@@ -411,15 +460,16 @@
 
                 var data = {
                     Id: $('#hdcoursesid').val(),
-                    coursename: $('#txtcourses').val().trim(),
+                    CourseId: $('#ddlCourseName').val(),
+                    TrainerId: $('#ddlTrainername').val(),                    
                     PreRequisite: $('#txtPrereq').val().trim(),
                     duration: $('#txtDuration').val().trim(),
                     startdate: $('#txtStartDate').val(),
                     enddate: $('#txtEndDate').val(),
                     Timings: $('#txtTiming').val(),
                     LinkToJoin: $('#txtLinktoJoin').val(),
-                    UserId: $('#hdUserId').val(),
-                    Username: $('#txtUser').val()
+                    UserId: $('#ddlUserName').val(),
+                    Username: $('#ddlUserName').val()
                 }
                 debugger;
                 saveEvent(data);
@@ -433,7 +483,8 @@
                     success: function (data) {
                         debugger;
                         if (data.status) {
-                            GetAllCourses($('#hdLoginUser').val());
+                            //GetAllCourses($('#hdLoginUser').val());
+                            GetAllCourses(0, 0);
                             $('#EditModal').modal('hide');
                         }
                     },
