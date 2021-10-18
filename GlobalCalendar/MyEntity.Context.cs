@@ -25,8 +25,9 @@ namespace GlobalCalendar
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Cours> Courses { get; set; }
         public virtual DbSet<UserDetail> UserDetails { get; set; }
         public virtual DbSet<Trainer> Trainers { get; set; }
+        public virtual DbSet<AllCours> AllCourses { get; set; }
+        public virtual DbSet<Cours> Courses { get; set; }
     }
 }
